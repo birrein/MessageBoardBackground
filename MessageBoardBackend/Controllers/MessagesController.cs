@@ -11,33 +11,30 @@ namespace MessageBoardBackend.Controllers
     [Route("api/[controller]")]
     public class MessagesController : Controller
     {
-        static List<Models.Message> messages = new List<Models.Message> {
-            new Models.Message {
-                Owner = "John",
-                Text  = "hello"
-            },
-            new Models.Message {
-                Owner = "Manuel",
-                Text  = "wena compare!"
-            }
-        };
+        readonly ApiContext context;
+
+        public MessagesController(ApiContext context)
+        {
+            this.context = context;
+        }
 
         public IEnumerable<Models.Message> Get()
         {
-            return messages;
+            return context.Messages;
         }
 
         [HttpGet("{name}")]
         public IEnumerable<Models.Message> Get(string name)
         {
-            return messages.FindAll(message => message.Owner == name);
+            return context.Messages.Where(message => message.Owner == name);
         }
 
         [HttpPost]
         public Models.Message Post([FromBody] Models.Message message)
         {
-            messages.Add(message);
-            return message;
+            var dbMessage = context.Messages.Add(message).Entity;
+            context.SaveChanges();
+            return dbMessage;
         }
     }
 }

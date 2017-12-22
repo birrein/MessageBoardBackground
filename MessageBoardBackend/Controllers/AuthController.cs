@@ -17,11 +17,21 @@ namespace MessageBoardBackend.Controllers
     [Route("auth")]
     public class AuthController : Controller
     {
+        readonly ApiContext context;
+
+        public AuthController(ApiContext context)
+        {
+            this.context = context;
+        }
+
         [HttpPost("register")]
         public JwtPacket Register([FromBody]Models.User user)
         {
             var jwt = new JwtSecurityToken();
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            context.Users.Add(user);
+            context.SaveChanges();
 
             return new JwtPacket() { Token = encodedJwt };
         }
