@@ -62,6 +62,12 @@ namespace MessageBoardBackend
                 Text = "wena compare!"
             });
 
+            context.Users.Add(new Models.User {
+                Email = "a",
+                FirstName = "Tim",
+                Password = "a"
+            });
+
             context.SaveChanges();
         }
     }
