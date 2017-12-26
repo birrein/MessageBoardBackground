@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,13 @@ namespace MessageBoardBackend.Controllers
                 return NotFound("User not found");
 
             return Ok(user);
+        }
+
+        [Authorize]
+        [HttpGet("me")]
+        public ActionResult Get()
+        {
+            return Ok("secure");
         }
     }
 }

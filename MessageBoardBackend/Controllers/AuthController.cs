@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace MessageBoardBackend.Controllers
 {
@@ -55,12 +57,15 @@ namespace MessageBoardBackend.Controllers
 
         JwtPacket CreateJwtPacket(Models.User user)
         {
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is the secret phrase"));
+            var signingCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256);
+
             var claims = new Claim[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id)
             };
 
-            var jwt = new JwtSecurityToken(claims: claims);
+            var jwt = new JwtSecurityToken(claims: claims, signingCredentials: signingCredentials);
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             return new JwtPacket() { Token = encodedJwt, FirstName = user.FirstName };
