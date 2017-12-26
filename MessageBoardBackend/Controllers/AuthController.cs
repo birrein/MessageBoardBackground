@@ -37,9 +37,9 @@ namespace MessageBoardBackend.Controllers
             var user = context.Users.SingleOrDefault(u =>
                 u.Email == loginData.Email && u.Password == loginData.Password);
 
-            if (user == null) {
+            if (user == null)
                 return NotFound("email or password incorrect");
-            }
+
             return Ok(CreateJwtPacket(user));
         }
 
@@ -52,7 +52,7 @@ namespace MessageBoardBackend.Controllers
             return CreateJwtPacket(user);
         }
 
-        private JwtPacket CreateJwtPacket(Models.User user)
+        JwtPacket CreateJwtPacket(Models.User user)
         {
             var jwt = new JwtSecurityToken();
             var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
