@@ -8,6 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MessageBoardBackend.Controllers
 {
+
+    public class EditProfileData
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
+
     [Produces("application/json")]
     [Route("api/Users")]
     public class UsersController : Controller
@@ -34,7 +42,28 @@ namespace MessageBoardBackend.Controllers
         [HttpGet("me")]
         public ActionResult Get()
         {
-            return Ok("secure");
+            return Ok(GetSecureUser());
+        }
+
+        [Authorize]
+        [HttpPost("me")]
+        public ActionResult Post([FromBody] EditProfileData profileData)
+        {
+            var user = GetSecureUser();
+
+            user.FirstName = profileData.FirstName ?? user.FirstName;
+            user.LastName = profileData.LastName ?? user.LastName;
+
+            context.SaveChanges();
+
+            return Ok(user);
+        }
+
+        Models.User GetSecureUser()
+        {
+            var id = HttpContext.User.Claims.First().Value;
+
+            return context.Users.SingleOrDefault(u => u.Id == id);
         }
     }
 }

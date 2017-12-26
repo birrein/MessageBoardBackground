@@ -92,7 +92,8 @@ namespace MessageBoardBackend
             context.Users.Add(new Models.User {
                 Email = "a",
                 FirstName = "Tim",
-                Password = "a"
+                Password = "a",
+                Id = "1"
             });
 
             context.SaveChanges();
